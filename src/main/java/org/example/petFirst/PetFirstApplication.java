@@ -3,6 +3,7 @@ package org.example.petFirst;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,27 +19,28 @@ public class PetFirstApplication {
 
         SpringApplication.run(PetFirstApplication.class, args);
 
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
 
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-            generator.initialize(2048);
+        KeyPair keyPair = generator.generateKeyPair();
 
-            KeyPair keyPair = generator.generateKeyPair();
-
-            String privateKey = """
+        String privateKey = """
                 -----BEGIN PRIVATE KEY-----
                 """ + Base64.getMimeEncoder(64, new byte[]{'\n'})
-                    .encodeToString(keyPair.getPrivate().getEncoded()) +
-                    "\n-----END PRIVATE KEY-----\n";
+                .encodeToString(keyPair.getPrivate().getEncoded())
+                + "\n-----END PRIVATE KEY-----\n";
 
-            String publicKey = """
+        String publicKey = """
                 -----BEGIN PUBLIC KEY-----
                 """ + Base64.getMimeEncoder(64, new byte[]{'\n'})
-                    .encodeToString(keyPair.getPublic().getEncoded()) +
-                    "\n-----END PUBLIC KEY-----\n";
-
+                .encodeToString(keyPair.getPublic().getEncoded())
+                + "\n-----END PUBLIC KEY-----\n";
+        if (!Files.exists(Path.of("private.pem")) && !Files.exists(Path.of("public.pem"))) {
             Files.writeString(Path.of("private.pem"), privateKey);
             Files.writeString(Path.of("public.pem"), publicKey);
-
-            System.out.println("Ключи созданы!");
+            System.out.println("RSA-ключи успешно созданы!");
         }
+
+
+    }
 }

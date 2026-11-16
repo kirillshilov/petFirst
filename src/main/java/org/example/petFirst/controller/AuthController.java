@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping
+    @PostMapping ("login")
     public Tokens login(@RequestBody LoginDTO loginDTO) {
         return authService.login(loginDTO);
     }
-    @PostMapping
+    @PostMapping("refresh")
     public Token refresh (@RequestBody RefreshTokenDTO refreshToken){
         return authService.refresh(refreshToken);
     }
